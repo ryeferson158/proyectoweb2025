@@ -17,7 +17,7 @@ function Dashboard({ reservas, busqueda, setBusqueda, cambiarEstado }) {
               <tr>
                 <th>Cliente</th>
                 <th>Fecha / Hora</th>
-                <th>Mesa</th>
+                <th>Personas</th>
                 <th>Estado</th>
               </tr>
             </thead>
@@ -25,9 +25,9 @@ function Dashboard({ reservas, busqueda, setBusqueda, cambiarEstado }) {
               {reservasRecientes.length > 0 ? (
                 reservasRecientes.map((reserva, index) => (
                   <tr key={index}>
-                    <td className="fw-bold">{reserva.nombre}</td>
+                    <td className="fw-bold">{reserva.cliente}</td>
                     <td>{reserva.fecha} - {reserva.hora}</td>
-                    <td>Mesa {reserva.mesa}</td>
+                    <td>{reserva.personas} comensales</td>
                     <td>
                       <span className={`badge ${
                         reserva.estado === 'Confirmada' ? 'bg-success' : 
