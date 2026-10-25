@@ -12,6 +12,9 @@ function App() {
   ]);
 
   const [busqueda, setBusqueda] = useState('');
+  
+  // NUEVO ESTADO: Controla qué pestaña está abierta en el menú lateral
+  const [vistaActiva, setVistaActiva] = useState('dashboard');
 
   const cambiarEstado = (id, nuevoEstado) => {
     setReservas(reservas.map(r => r.id === id ? { ...r, estado: nuevoEstado } : r));
@@ -23,6 +26,8 @@ function App() {
       busqueda={busqueda}
       setBusqueda={setBusqueda}
       cambiarEstado={cambiarEstado}
+      vistaActiva={vistaActiva}
+      setVistaActiva={setVistaActiva}
     />
   );
 }
