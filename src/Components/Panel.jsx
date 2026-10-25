@@ -2,94 +2,64 @@ import React from 'react';
 import Dashboard from './Dashboard';
 import VistaReservas from './VistaReservas';
 import VistaMesas from './VistaMesas';
+import VistaPlatos from './VistaPlatos';
 import VistaClientes from './VistaClientes';
 import VistaConfiguracion from './VistaConfiguracion';
 
-function Panel({ reservas, busqueda, setBusqueda, cambiarEstado, vistaActiva, setVistaActiva }) {
+function Panel({ reservas, busqueda, setBusqueda, cambiarEstado, agregarReserva, vistaActiva, setVistaActiva }) {
+  const menuItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
+    { id: 'reservas', label: 'Reservas', icon: '📅' },
+    { id: 'mesas', label: 'Mesas', icon: '🪑' },
+    { id: 'platos', label: 'Platos / Carta', icon: '🍽️' },
+    { id: 'clientes', label: 'Clientes', icon: '👥' },
+    { id: 'configuracion', label: 'Configuración', icon: '⚙️' },
+  ];
+
   return (
-    <div className="d-flex" id="wrapper" style={{ minHeight: '100vh', backgroundColor: '#f8f9fc' }}>
-      
-      {/* BARRA LATERAL (SIDEBAR INTERACTIVA) */}
-      <nav id="sidebar" className="bg-dark text-white p-3" style={{ width: '250px' }}>
-        <h4 className="text-warning py-3 text-center fw-bold">🍽️ RestoAdmin</h4>
-        <hr className="text-secondary" />
-        <ul className="nav flex-column gap-2">
-          <li className="nav-item">
-            <button 
-              onClick={() => setVistaActiva('dashboard')}
-              className={`nav-link text-start w-100 border-0 ${vistaActiva === 'dashboard' ? 'active bg-primary text-white' : 'text-white-50 bg-transparent'}`}
-            >
-              📊 Dashboard
-            </button>
-          </li>
-          <li className="nav-item">
-            <button 
-              onClick={() => setVistaActiva('reservas')}
-              className={`nav-link text-start w-100 border-0 ${vistaActiva === 'reservas' ? 'active bg-primary text-white' : 'text-white-50 bg-transparent'}`}
-            >
-              📅 Reservas
-            </button>
-          </li>
-          <li className="nav-item">
-            <button 
-              onClick={() => setVistaActiva('mesas')}
-              className={`nav-link text-start w-100 border-0 ${vistaActiva === 'mesas' ? 'active bg-primary text-white' : 'text-white-50 bg-transparent'}`}
-            >
-              🪑 Mesas
-            </button>
-          </li>
-          <li className="nav-item">
-            <button 
-              onClick={() => setVistaActiva('clientes')}
-              className={`nav-link text-start w-100 border-0 ${vistaActiva === 'clientes' ? 'active bg-primary text-white' : 'text-white-50 bg-transparent'}`}
-            >
-              👥 Clientes
-            </button>
-          </li>
-          <li className="nav-item">
-            <button 
-              onClick={() => setVistaActiva('config')}
-              className={`nav-link text-start w-100 border-0 ${vistaActiva === 'config' ? 'active bg-primary text-white' : 'text-white-50 bg-transparent'}`}
-            >
-              ⚙️ Configuración
-            </button>
-          </li>
+    <div className="d-flex" style={{ minHeight: '100vh' }}>
+      {/* Sidebar Lateral */}
+      <div className="bg-dark text-white p-3 d-flex flex-column" style={{ width: '250px' }}>
+        <h4 className="fw-bold mb-4 text-warning">🍽️ RestoAdmin</h4>
+        
+        <ul className="nav nav-pills flex-column gap-1">
+          {menuItems.map(item => (
+            <li className="nav-item" key={item.id}>
+              <button
+                className={`btn w-100 text-start text-white py-2 ${vistaActiva === item.id ? 'btn-primary' : 'btn-dark'}`}
+                onClick={() => setVistaActiva(item.id)}
+              >
+                <span className="me-2">{item.icon}</span> {item.label}
+              </button>
+            </li>
+          ))}
         </ul>
-      </nav>
+      </div>
 
-      {/* CONTENIDO PRINCIPAL DINÁMICO */}
-      <div id="page-content-wrapper" className="w-100">
-        <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom px-4 py-3 shadow-sm">
-          <span className="navbar-brand fw-bold text-secondary">Panel de Gestión de Reservas</span>
-          <div className="ms-auto text-muted small">Administrador (Restaurante Central)</div>
-        </nav>
+      {/* Contenedor Principal */}
+      <div className="flex-grow-1 bg-light d-flex flex-column">
+        {/* Topbar Superior */}
+        <div className="bg-white px-4 py-3 border-bottom d-flex justify-content-between align-items-center shadow-sm">
+          <span className="text-secondary fw-semibold">Panel de Gestión de Reservas</span>
+          <span className="badge bg-light text-dark border">Administrador (Restaurante Central)</span>
+        </div>
 
-        <div className="container-fluid p-4">
-          
-          {vistaActiva === 'dashboard' && (
-            <Dashboard 
-              reservas={reservas} 
-              busqueda={busqueda} 
-              setBusqueda={setBusqueda} 
-              cambiarEstado={cambiarEstado} 
-            />
-          )}
-
+        {/* Vista Renderizada */}
+        <div className="p-4 flex-grow-1">
+          {vistaActiva === 'dashboard' && <Dashboard reservas={reservas} />}
           {vistaActiva === 'reservas' && (
             <VistaReservas 
               reservas={reservas} 
               busqueda={busqueda} 
               setBusqueda={setBusqueda} 
-              cambiarEstado={cambiarEstado} 
+              cambiarEstado={cambiarEstado}
+              agregarReserva={agregarReserva}
             />
           )}
-
-          {vistaActiva === 'mesas' && <VistaMesas />}
-
+          {vistaActiva === 'mesas' && <VistaMesas reservas={reservas} />}
+          {vistaActiva === 'platos' && <VistaPlatos />}
           {vistaActiva === 'clientes' && <VistaClientes />}
-
-          {vistaActiva === 'config' && <VistaConfiguracion />}
-
+          {vistaActiva === 'configuracion' && <VistaConfiguracion />}
         </div>
       </div>
     </div>
