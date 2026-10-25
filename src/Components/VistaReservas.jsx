@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from 'react';
 
 function VistaReservas({ reservas, busqueda, setBusqueda, cambiarEstado, agregarReserva }) {
-  // 1. Estados para alternar vistas y modal
   const [modoVista, setModoVista] = useState('tabla'); // 'tabla' o 'calendario'
   const [mostrarModal, setMostrarModal] = useState(false);
   
-  // 2. Estados para el Calendario interactivo
   const [fechaCalendario, setFechaCalendario] = useState('2026-10-25');
   const [reservasDelDia, setReservasDelDia] = useState([]);
 
-  // Horarios y mesas de atención del restaurante
   const horarios = ['13:00', '14:00', '20:30', '21:00'];
   const mesas = [1, 2, 3, 4];
 
-  // Estado para el formulario de nueva reserva
   const [form, setForm] = useState({
     cliente: '',
     fecha: '2026-10-25',
@@ -22,8 +18,7 @@ function VistaReservas({ reservas, busqueda, setBusqueda, cambiarEstado, agregar
     mesa: 1
   });
 
-  // 3. USO DE useEffect EXIGIDO EN LA RÚBRICA:
-  // Se ejecuta automáticamente cada vez que cambian las reservas o la fecha seleccionada
+  // useEffect exigido en la rúbrica: actualiza la cuadrícula si cambia la fecha o las reservas
   useEffect(() => {
     const filtradas = reservas.filter(
       r => r.fecha === fechaCalendario && r.estado !== 'Cancelada'
@@ -31,12 +26,10 @@ function VistaReservas({ reservas, busqueda, setBusqueda, cambiarEstado, agregar
     setReservasDelDia(filtradas);
   }, [fechaCalendario, reservas]);
 
-  // Función JS para buscar si una mesa y hora ya están ocupadas
   const obtenerReservaEnTurno = (mesa, hora) => {
     return reservasDelDia.find(r => r.mesa === mesa && r.hora === hora);
   };
 
-  // Filtro de la tabla por nombre de cliente
   const reservasFiltradas = reservas ? reservas.filter(r => 
     r.cliente.toLowerCase().includes((busqueda || '').toLowerCase())
   ) : [];
@@ -52,14 +45,13 @@ function VistaReservas({ reservas, busqueda, setBusqueda, cambiarEstado, agregar
 
   return (
     <div>
-      {/* Encabezado con Switch de Vistas */}
+      {/* Botones de cambio de vista */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div>
           <h2 className="text-dark fw-bold m-0">📅 Control y Gestión de Reservas</h2>
           <p className="text-muted mb-0">Supervisa las solicitudes en formato de lista o agenda horaria.</p>
         </div>
         <div className="d-flex gap-2">
-          {/* Botones para alternar entre Tabla y Calendario */}
           <div className="btn-group">
             <button 
               className={`btn btn-sm ${modoVista === 'tabla' ? 'btn-dark' : 'btn-outline-secondary'}`}
@@ -81,7 +73,7 @@ function VistaReservas({ reservas, busqueda, setBusqueda, cambiarEstado, agregar
         </div>
       </div>
 
-      {/* ======================= VISTA 1: TABLA ======================= */}
+      {/* 1. MODO TABLA */}
       {modoVista === 'tabla' && (
         <>
           <div className="mb-3">
@@ -151,16 +143,15 @@ function VistaReservas({ reservas, busqueda, setBusqueda, cambiarEstado, agregar
         </>
       )}
 
-      {/* ======================= VISTA 2: CALENDARIO INTERACTIVO ======================= */}
+      {/* 2. MODO CALENDARIO HORARIO */}
       {modoVista === 'calendario' && (
         <div className="card shadow-sm border-0 p-4">
           <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
             <div>
               <h5 className="fw-bold mb-1">Agenda y Ocupación por Turnos</h5>
-              <small className="text-muted">Visualiza en tiempo real los bloques de horario ocupados y libres para evitar sobreventa.</small>
+              <small className="text-muted">Visualiza en tiempo real qué mesas están libres u ocupadas para evitar choques.</small>
             </div>
             
-            {/* Selector de fecha reactivo */}
             <div className="d-flex align-items-center gap-2">
               <label className="fw-bold small text-secondary">Fecha:</label>
               <input 
@@ -172,7 +163,6 @@ function VistaReservas({ reservas, busqueda, setBusqueda, cambiarEstado, agregar
             </div>
           </div>
 
-          {/* Cuadrícula Horaria Interactiva (Matriz Mesas vs Horarios) */}
           <div className="table-responsive">
             <table className="table table-bordered text-center align-middle">
               <thead className="table-light">
@@ -213,7 +203,7 @@ function VistaReservas({ reservas, busqueda, setBusqueda, cambiarEstado, agregar
         </div>
       )}
 
-      {/* Modal para Crear Reserva */}
+      {/* MODAL NUEVA RESERVA */}
       {mostrarModal && (
         <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
           <div className="modal-dialog modal-dialog-centered">

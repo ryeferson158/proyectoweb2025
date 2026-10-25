@@ -2,7 +2,6 @@ import React from 'react';
 import MetricCards from './MetricCards';
 
 function Dashboard({ reservas = [] }) {
-  // Obtenemos solo las últimas 5 reservas
   const reservasRecientes = reservas.slice(0, 5);
 
   return (

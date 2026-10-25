@@ -4,7 +4,7 @@ import './App.css';
 import Panel from './Components/Panel';
 
 function App() {
-  // Lista central de reservas
+  // Lista central de reservas con su mesa asignada
   const [reservas, setReservas] = useState([
     { id: 1, cliente: 'Carlos Mendoza', fecha: '2026-10-25', hora: '14:00', personas: 4, mesa: 2, estado: 'Confirmada' },
     { id: 2, cliente: 'María López', fecha: '2026-10-25', hora: '20:30', personas: 2, mesa: 3, estado: 'Pendiente' },
@@ -15,7 +15,7 @@ function App() {
   const [busqueda, setBusqueda] = useState('');
   const [vistaActiva, setVistaActiva] = useState('dashboard');
 
-  // Función JS para cambiar estado (Aprobar / Cancelar)
+  // Función JS para aprobar o cancelar reservas
   const cambiarEstado = (id, nuevoEstado) => {
     const actualizadas = reservas.map(res => 
       res.id === id ? { ...res, estado: nuevoEstado } : res
@@ -23,9 +23,8 @@ function App() {
     setReservas(actualizadas);
   };
 
-  // Función JS para registrar nueva reserva evitando duplicados (Exigido en rúbrica)
+  // Función JS para registrar nueva reserva evitando duplicados (Rúbrica)
   const agregarReserva = (nueva) => {
-    // Verificamos si ya existe reserva para la misma mesa, fecha y hora
     const existeConflicto = reservas.some(r => 
       r.mesa === Number(nueva.mesa) && 
       r.fecha === nueva.fecha && 

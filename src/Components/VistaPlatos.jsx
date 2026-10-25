@@ -12,14 +12,12 @@ function VistaPlatos() {
   const [busqueda, setBusqueda] = useState('');
   const [categoria, setCategoria] = useState('Todos');
 
-  // Alternar disponibilidad
   const toggleEstado = (id) => {
     setPlatos(platos.map(p => 
       p.id === id ? { ...p, estado: p.estado === 'Disponible' ? 'Agotado' : 'Disponible' } : p
     ));
   };
 
-  // Filtro
   const platosFiltrados = platos.filter(p => {
     const coincideNombre = p.nombre.toLowerCase().includes(busqueda.toLowerCase());
     const coincideCat = categoria === 'Todos' || p.categoria === categoria;
@@ -33,7 +31,6 @@ function VistaPlatos() {
       </div>
       <p className="text-muted">Controla la disponibilidad en cocina de los platillos ofrecidos.</p>
 
-      {/* Barra de búsqueda y categorías */}
       <div className="card shadow-sm border-0 p-3 mb-4">
         <div className="row g-2 align-items-center">
           <div className="col-md-6">
@@ -60,7 +57,6 @@ function VistaPlatos() {
         </div>
       </div>
 
-      {/* Grid de Cards */}
       <div className="row g-3">
         {platosFiltrados.map((plato) => (
           <div className="col-md-4" key={plato.id}>

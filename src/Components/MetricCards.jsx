@@ -1,7 +1,6 @@
 import React from 'react';
 
 function MetricCards({ reservas = [] }) {
-  // Conteo automático en JS
   const totalHoy = reservas.length;
   const pendientes = reservas.filter(r => r.estado === 'Pendiente').length;
   const confirmadas = reservas.filter(r => r.estado === 'Confirmada').length;
