@@ -15,8 +15,9 @@ function VistaMesas({ reservas = [] }) {
       
       <div className="row g-3">
         {mesasBase.map((mesa) => {
+          // Usamos Number() para que no falle si la mesa es texto o número
           const reservaActiva = reservas.find(
-            (r) => r.mesa === mesa.id && r.estado !== 'Cancelada'
+            (r) => Number(r.mesa) === mesa.id && r.estado !== 'Cancelada'
           );
 
           const estaOcupada = Boolean(reservaActiva);
