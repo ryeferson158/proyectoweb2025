@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function VistaPlatos() {
+function VistaPlatos({ registrarActividad }) {
   const [platos, setPlatos] = useState([
     { id: 1, nombre: 'Lomo Saltado', categoria: 'Fondos', precio: 45.00, estado: 'Disponible' },
     { id: 2, nombre: 'Ceviche Clásico', categoria: 'Entradas', precio: 38.00, estado: 'Disponible' },
@@ -12,10 +12,30 @@ function VistaPlatos() {
   const [busqueda, setBusqueda] = useState('');
   const [categoria, setCategoria] = useState('Todos');
 
+  // Alternar disponibilidad y registrar en el historial
   const toggleEstado = (id) => {
-    setPlatos(platos.map(p => 
-      p.id === id ? { ...p, estado: p.estado === 'Disponible' ? 'Agotado' : 'Disponible' } : p
-    ));
+    let platoModificado = null;
+    let nuevoEstado = '';
+
+    const actualizados = platos.map(p => {
+      if (p.id === id) {
+        nuevoEstado = p.estado === 'Disponible' ? 'Agotado' : 'Disponible';
+        platoModificado = p;
+        return { ...p, estado: nuevoEstado };
+      }
+      return p;
+    });
+
+    setPlatos(actualizados);
+
+    // Registramos en el historial del Dashboard si se pasó registrarActividad
+    if (registrarActividad && platoModificado) {
+      if (nuevoEstado === 'Agotado') {
+        registrarActividad('plato', `Plato Agotado: ${platoModificado.nombre}`, 'Marcado como no disponible en cocina');
+      } else {
+        registrarActividad('plato', `Plato Disponible: ${platoModificado.nombre}`, 'Habilitado nuevamente para pedidos');
+      }
+    }
   };
 
   const platosFiltrados = platos.filter(p => {
@@ -27,7 +47,9 @@ function VistaPlatos() {
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2 className="text-dark fw-bold m-0">🍽️ Carta y Menú del Restaurante</h2>
+        <h2 className="text-dark fw-bold m-0">
+          <i className="fa-solid fa-bowl-food text-warning me-2"></i> Carta y Menú del Restaurante
+        </h2>
       </div>
       <p className="text-muted">Controla la disponibilidad en cocina de los platillos ofrecidos.</p>
 

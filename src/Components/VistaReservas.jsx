@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 
 function VistaReservas({ reservas, busqueda, setBusqueda, cambiarEstado, agregarReserva }) {
-  const [modoVista, setModoVista] = useState('tabla'); // 'tabla' o 'calendario'
+  const [modoVista, setModoVista] = useState('tabla');
   const [mostrarModal, setMostrarModal] = useState(false);
   
-  const [fechaCalendario, setFechaCalendario] = useState('2026-10-25');
+  const [fechaCalendario, setFechaCalendario] = useState('2026-10-19');
   const [reservasDelDia, setReservasDelDia] = useState([]);
 
-  const horarios = ['13:00', '14:00', '20:30', '21:00'];
+  // Horarios de Desayuno (09:00, 10:30), Almuerzo (13:00, 14:00) y Cena (20:30, 21:00)
+  const horarios = ['09:00', '10:30', '13:00', '14:00', '20:30', '21:00'];
   const mesas = [1, 2, 3, 4];
 
   const [form, setForm] = useState({
     cliente: '',
-    fecha: '2026-10-25',
-    hora: '14:00',
+    fecha: '2026-10-19',
+    hora: '09:00',
     personas: 2,
     mesa: 1
   });
 
-  // useEffect exigido en la rúbrica: actualiza la cuadrícula si cambia la fecha o las reservas
   useEffect(() => {
     const filtradas = reservas.filter(
       r => r.fecha === fechaCalendario && r.estado !== 'Cancelada'
@@ -27,7 +27,7 @@ function VistaReservas({ reservas, busqueda, setBusqueda, cambiarEstado, agregar
   }, [fechaCalendario, reservas]);
 
   const obtenerReservaEnTurno = (mesa, hora) => {
-    return reservasDelDia.find(r => r.mesa === mesa && r.hora === hora);
+    return reservasDelDia.find(r => Number(r.mesa) === mesa && r.hora === hora);
   };
 
   const reservasFiltradas = reservas ? reservas.filter(r => 
@@ -38,14 +38,13 @@ function VistaReservas({ reservas, busqueda, setBusqueda, cambiarEstado, agregar
     e.preventDefault();
     const exito = agregarReserva(form);
     if (exito) {
-      setForm({ cliente: '', fecha: '2026-10-25', hora: '14:00', personas: 2, mesa: 1 });
+      setForm({ cliente: '', fecha: '2026-10-19', hora: '09:00', personas: 2, mesa: 1 });
       setMostrarModal(false);
     }
   };
 
   return (
     <div>
-      {/* Botones de cambio de vista */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div>
           <h2 className="text-dark fw-bold m-0">📅 Control y Gestión de Reservas</h2>
@@ -73,7 +72,6 @@ function VistaReservas({ reservas, busqueda, setBusqueda, cambiarEstado, agregar
         </div>
       </div>
 
-      {/* 1. MODO TABLA */}
       {modoVista === 'tabla' && (
         <>
           <div className="mb-3">
@@ -143,13 +141,12 @@ function VistaReservas({ reservas, busqueda, setBusqueda, cambiarEstado, agregar
         </>
       )}
 
-      {/* 2. MODO CALENDARIO HORARIO */}
       {modoVista === 'calendario' && (
         <div className="card shadow-sm border-0 p-4">
           <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
             <div>
               <h5 className="fw-bold mb-1">Agenda y Ocupación por Turnos</h5>
-              <small className="text-muted">Visualiza en tiempo real qué mesas están libres u ocupadas para evitar choques.</small>
+              <small className="text-muted">Horarios de Desayuno (09:00 - 10:30), Almuerzo (13:00 - 14:00) y Cena (20:30 - 21:00).</small>
             </div>
             
             <div className="d-flex align-items-center gap-2">
@@ -203,7 +200,6 @@ function VistaReservas({ reservas, busqueda, setBusqueda, cambiarEstado, agregar
         </div>
       )}
 
-      {/* MODAL NUEVA RESERVA */}
       {mostrarModal && (
         <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
           <div className="modal-dialog modal-dialog-centered">
@@ -236,16 +232,24 @@ function VistaReservas({ reservas, busqueda, setBusqueda, cambiarEstado, agregar
                       />
                     </div>
                     <div className="col-6">
-                      <label className="form-label small fw-bold">Hora</label>
+                      <label className="form-label small fw-bold">Turno / Hora</label>
                       <select 
                         className="form-select"
                         value={form.hora}
                         onChange={(e) => setForm({ ...form, hora: e.target.value })}
                       >
-                        <option value="13:00">13:00</option>
-                        <option value="14:00">14:00</option>
-                        <option value="20:30">20:30</option>
-                        <option value="21:00">21:00</option>
+                        <optgroup label="🍳 Desayuno">
+                          <option value="09:00">09:00 AM</option>
+                          <option value="10:30">10:30 AM</option>
+                        </optgroup>
+                        <optgroup label="🍲 Almuerzo">
+                          <option value="13:00">01:00 PM (13:00)</option>
+                          <option value="14:00">02:00 PM (14:00)</option>
+                        </optgroup>
+                        <optgroup label="🍷 Cena">
+                          <option value="20:30">08:30 PM (20:30)</option>
+                          <option value="21:00">09:00 PM (21:00)</option>
+                        </optgroup>
                       </select>
                     </div>
                   </div>

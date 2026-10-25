@@ -21,7 +21,7 @@ function VistaClientes({ reservas = [] }) {
 
   return (
     <div>
-      <h2 className="mb-4 text-dark fw-bold">👥 Directorio de Clientes Frecuentes</h2>
+      <h2 className="mb-4 text-dark fw-bold"><i className="fa-solid fa-users text-info me-2"></i> Directorio de Clientes Frecuentes</h2>
       <p className="text-muted">Directorio actualizado automáticamente según el historial de reservas.</p>
 
       <div className="card shadow-sm border-0 p-4">

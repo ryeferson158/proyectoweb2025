@@ -8,7 +8,9 @@ function VistaConfiguracion() {
 
   return (
     <div>
-      <h2 className="mb-4 text-dark fw-bold">⚙️ Configuración General del Sistema</h2>
+      <h2 className="mb-4 text-dark fw-bold">
+        <i className="fa-solid fa-gear text-secondary me-2"></i> Configuración General del Sistema
+      </h2>
       <div className="card shadow-sm border-0 p-4">
         <form onSubmit={handleGuardar}>
           <div className="mb-3">
@@ -17,7 +19,7 @@ function VistaConfiguracion() {
           </div>
           <div className="mb-3">
             <label className="form-label fw-bold">Horario de Atención</label>
-            <input type="text" className="form-control" defaultValue="12:00 PM - 11:00 PM" />
+            <input type="text" className="form-control" defaultValue="08:00 AM - 11:00 PM" />
           </div>
           <button type="submit" className="btn btn-success">Guardar Cambios</button>
         </form>
