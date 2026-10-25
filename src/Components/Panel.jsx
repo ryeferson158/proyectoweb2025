@@ -1,6 +1,9 @@
 import React from 'react';
-import MetricCards from './MetricCards';
-import TablaReservas from './TablaReservas';
+import Dashboard from './Dashboard';
+import VistaReservas from './VistaReservas';
+import VistaMesas from './VistaMesas';
+import VistaClientes from './VistaClientes';
+import VistaConfiguracion from './VistaConfiguracion';
 
 function Panel({ reservas, busqueda, setBusqueda, cambiarEstado, vistaActiva, setVistaActiva }) {
   return (
@@ -63,56 +66,29 @@ function Panel({ reservas, busqueda, setBusqueda, cambiarEstado, vistaActiva, se
 
         <div className="container-fluid p-4">
           
-          {/* VISTA 1: DASHBOARD */}
           {vistaActiva === 'dashboard' && (
-            <>
-              <h2 className="mb-4 text-dark fw-bold">Dashboard / Resumen General</h2>
-              <MetricCards />
-              <TablaReservas 
-                reservas={reservas} 
-                busqueda={busqueda} 
-                setBusqueda={setBusqueda} 
-                cambiarEstado={cambiarEstado} 
-              />
-            </>
+            <Dashboard 
+              reservas={reservas} 
+              busqueda={busqueda} 
+              setBusqueda={setBusqueda} 
+              cambiarEstado={cambiarEstado} 
+            />
           )}
 
-          {/* VISTA 2: RESERVAS */}
           {vistaActiva === 'reservas' && (
-            <>
-              <h2 className="mb-4 text-dark fw-bold">Gestión Completa de Reservas</h2>
-              <TablaReservas 
-                reservas={reservas} 
-                busqueda={busqueda} 
-                setBusqueda={setBusqueda} 
-                cambiarEstado={cambiarEstado} 
-              />
-            </>
+            <VistaReservas 
+              reservas={reservas} 
+              busqueda={busqueda} 
+              setBusqueda={setBusqueda} 
+              cambiarEstado={cambiarEstado} 
+            />
           )}
 
-          {/* VISTA 3: MESAS */}
-          {vistaActiva === 'mesas' && (
-            <div>
-              <h2 className="mb-4 text-dark fw-bold">Distribución y Estado de Mesas</h2>
-              <div className="alert alert-info">Aquí puedes mostrar el mapa de mesas del restaurante para la rúbrica.</div>
-            </div>
-          )}
+          {vistaActiva === 'mesas' && <VistaMesas />}
 
-          {/* VISTA 4: CLIENTES */}
-          {vistaActiva === 'clientes' && (
-            <div>
-              <h2 className="mb-4 text-dark fw-bold">Directorio de Clientes</h2>
-              <div className="alert alert-secondary">Listado general de clientes frecuentes y historial.</div>
-            </div>
-          )}
+          {vistaActiva === 'clientes' && <VistaClientes />}
 
-          {/* VISTA 5: CONFIGURACIÓN */}
-          {vistaActiva === 'config' && (
-            <div>
-              <h2 className="mb-4 text-dark fw-bold">Configuración del Sistema</h2>
-              <div className="alert alert-warning">Ajustes generales del panel administrativo del restaurante.</div>
-            </div>
-          )}
+          {vistaActiva === 'config' && <VistaConfiguracion />}
 
         </div>
       </div>
