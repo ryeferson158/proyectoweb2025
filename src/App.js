@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import Panel from './Panel';
+import Panel from './Components/Panel';
 
 function App() {
   const [reservas, setReservas] = useState([
