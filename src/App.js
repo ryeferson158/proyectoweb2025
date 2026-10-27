@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+
+// TODOS LOS COMPONENTES EN LA CARPETA Components
+import Inicio from './Components/Inicio';
+import Promociones from './Components/Promociones';
+import Carta from './Components/Carta';
+import Reserva from './Components/Reserva';
 import Panel from './Components/Panel';
 
 function App() {
-  // Lista inicial de reservas
+  // Lista central de reservas
   const [reservas, setReservas] = useState([
     { id: 1, cliente: 'Carlos Mendoza', fecha: '2026-10-19', hora: '09:00', personas: 2, mesa: 1, estado: 'Confirmada' },
     { id: 2, cliente: 'Lucía Fernández', fecha: '2026-10-19', hora: '14:00', personas: 4, mesa: 2, estado: 'Confirmada' },
@@ -19,43 +26,36 @@ function App() {
     { id: 11, cliente: 'Pedro Vargas', fecha: '2026-10-25', hora: '21:00', personas: 3, mesa: 1, estado: 'Cancelada' }
   ]);
 
-  // HISTORIAL GLOBAL DE ACTIVIDAD EN TIEMPO REAL
+  // Historial de actividad
   const [actividades, setActividades] = useState([
     { id: 1, tipo: 'mesa', titulo: 'Mesa 01 liberada', detalle: 'Cancelación de Pedro Vargas', hora: '21:00' },
     { id: 2, tipo: 'reserva', titulo: 'Nueva reserva registrada', detalle: 'Ana Torres en Mesa 03', hora: '13:15' },
     { id: 3, tipo: 'plato', titulo: 'Plato "Causa Rellena"', detalle: 'Marcado como AGOTADO en cocina', hora: '12:00' },
   ]);
 
-  // Función JS para registrar cualquier evento en el sistema
   const registrarActividad = (tipo, titulo, detalle) => {
     const ahora = new Date();
     const horaFormateada = ahora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
     const nuevoEvento = {
       id: Date.now(),
-      tipo, // 'reserva', 'mesa', 'plato', 'confirmada'
+      tipo,
       titulo,
       detalle,
       hora: `Hoy ${horaFormateada}`,
     };
-
-    // Lo agregamos AL INICIO para que siempre salga el más nuevo arriba
     setActividades(prev => [nuevoEvento, ...prev.slice(0, 5)]);
   };
 
   const [busqueda, setBusqueda] = useState('');
   const [vistaActiva, setVistaActiva] = useState('dashboard');
 
-  // Función para cambiar estado con registro en el historial
   const cambiarEstado = (id, nuevoEstado) => {
     const reservaAfectada = reservas.find(r => r.id === id);
-
     const actualizadas = reservas.map(res => 
       res.id === id ? { ...res, estado: nuevoEstado } : res
     );
     setReservas(actualizadas);
 
-    // Registramos en el historial si se confirmó o se liberó la mesa
     if (reservaAfectada) {
       if (nuevoEstado === 'Cancelada') {
         registrarActividad('mesa', `Mesa 0${reservaAfectada.mesa} Liberada`, `Reserva de ${reservaAfectada.cliente} cancelada`);
@@ -65,7 +65,6 @@ function App() {
     }
   };
 
-  // Función para registrar nueva reserva (se añade al INICIO de la lista)
   const agregarReserva = (nueva) => {
     const existeConflicto = reservas.some(r => 
       r.mesa === Number(nueva.mesa) && 
@@ -75,7 +74,7 @@ function App() {
     );
 
     if (existeConflicto) {
-      alert(`⚠️ Conflicto: La Mesa 0${nueva.mesa} ya está ocupada el ${nueva.fecha} a las ${nueva.hora}.`);
+      alert(`⚠️ Conflicto de horario: La Mesa 0${nueva.mesa} ya está ocupada el ${nueva.fecha} a las ${nueva.hora}. Por favor elige otro horario o mesa.`);
       return false;
     }
 
@@ -87,28 +86,40 @@ function App() {
       estado: 'Pendiente'
     };
 
-    // AL PONER reservaCreada PRIMERO, APARECERÁ INMEDIATAMENTE ARRIBA EN LA TABLA
     setReservas([reservaCreada, ...reservas]);
-
-    // Registramos el evento en el historial
-    registrarActividad('reserva', 'Nueva Reserva Registrada', `${nueva.cliente} (Mesa 0${nueva.mesa} - ${nueva.hora})`);
-
-    alert('¡Reserva registrada con éxito!');
+    registrarActividad('reserva', 'Nueva Reserva Web de Cliente', `${nueva.cliente} (Mesa 0${nueva.mesa} - ${nueva.hora})`);
+    alert('¡Tu reserva ha sido enviada con éxito! El restaurante la confirmará a la brevedad.');
     return true;
   };
 
   return (
-    <Panel 
-      reservas={reservas}
-      busqueda={busqueda}
-      setBusqueda={setBusqueda}
-      cambiarEstado={cambiarEstado}
-      agregarReserva={agregarReserva}
-      vistaActiva={vistaActiva}
-      setVistaActiva={setVistaActiva}
-      actividades={actividades}
-      registrarActividad={registrarActividad}
-    />
+    <Router>
+      <Routes>
+        {/* Rutas del Cliente */}
+        <Route path="/" element={<Inicio />} />
+        <Route path="/promociones" element={<Promociones />} />
+        <Route path="/carta" element={<Carta />} />
+        <Route path="/reserva" element={<Reserva agregarReserva={agregarReserva} />} />
+
+        {/* Ruta del Administrador (CRM) */}
+        <Route 
+          path="/admin" 
+          element={
+            <Panel 
+              reservas={reservas}
+              busqueda={busqueda}
+              setBusqueda={setBusqueda}
+              cambiarEstado={cambiarEstado}
+              agregarReserva={agregarReserva}
+              vistaActiva={vistaActiva}
+              setVistaActiva={setVistaActiva}
+              actividades={actividades}
+              registrarActividad={registrarActividad}
+            />
+          } 
+        />
+      </Routes>
+    </Router>
   );
 }
 
